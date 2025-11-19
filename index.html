@@ -54,65 +54,95 @@
     animation: floatUp 1s ease-out forwards;
     pointer-events: none;
   }
+  .letter {
+    position: absolute;
+    font-size: 32px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.8);
+    pointer-events: none;
+    animation: floatLetter 6s linear infinite;
+  }
   @keyframes floatUp {
     0% { opacity: 1; transform: translateY(0) scale(1); }
     100% { opacity: 0; transform: translateY(-120px) scale(1.5); }
+  }
+  @keyframes floatLetter {
+    0% { transform: translateY(100%); opacity: 0; }
+    10% { opacity: 1; }
+    100% { transform: translateY(-100%) rotate(360deg); opacity: 0; }
   }
 </style>
 </head>
 <body>
 <div id="game">
+  <!-- Balls -->
   <div id="ball1" class="ball" style="background-color:#e91e63;">💖</div>
   <div id="ball2" class="ball" style="background-color:#9c27b0;">💜</div>
   <div id="ball3" class="ball" style="background-color:#ffeb3b; color:#000;">💛</div>
   <div id="ball4" class="ball" style="background-color:#4caf50;">💚</div>
+
+  <!-- Message -->
   <div id="message"></div>
 </div>
 
 <script>
-  const game = document.getElementById('game');
-  const message = document.getElementById('message');
+const game = document.getElementById('game');
+const message = document.getElementById('message');
 
-  const balls = [
-    {el: document.getElementById('ball1'), text: "Rohan t'aime ❤️"},
-    {el: document.getElementById('ball2'), text: "Rohan te manque 💌"},
-    {el: document.getElementById('ball3'), text: "Tu es trop mignonne 🥰"},
-    {el: document.getElementById('ball4'), text: "Rohan te veut 💌"}
-  ];
+const balls = [
+  {el: document.getElementById('ball1'), text: "Rohan t'aime ❤️"},
+  {el: document.getElementById('ball2'), text: "Rohan te manque 💌"},
+  {el: document.getElementById('ball3'), text: "Tu es trop mignonne 🥰"},
+  {el: document.getElementById('ball4'), text: "Rohan te veut 💌"}
+];
 
-  function moveBall(ball) {
-    const gameWidth = game.clientWidth - 80;
-    const gameHeight = game.clientHeight - 80;
-    const x = Math.random() * gameWidth;
-    const y = Math.random() * gameHeight;
-    ball.style.left = x + 'px';
-    ball.style.top = y + 'px';
+function moveBall(ball) {
+  const gameWidth = game.clientWidth - 80;
+  const gameHeight = game.clientHeight - 80;
+  const x = Math.random() * gameWidth;
+  const y = Math.random() * gameHeight;
+  ball.style.left = x + 'px';
+  ball.style.top = y + 'px';
+}
+
+function createHearts(x, y, count = 8) {
+  for (let i = 0; i < count; i++) {
+    const heart = document.createElement('div');
+    heart.classList.add('heart');
+    heart.textContent = '❤️';
+    heart.style.left = x + (Math.random()*40 - 20) + 'px';
+    heart.style.top = y + (Math.random()*40 - 20) + 'px';
+    heart.style.fontSize = (16 + Math.random()*16) + 'px';
+    game.appendChild(heart);
+    setTimeout(() => heart.remove(), 1000);
   }
+}
 
-  function createHearts(x, y, count = 5) {
-    for (let i = 0; i < count; i++) {
-      const heart = document.createElement('div');
-      heart.classList.add('heart');
-      heart.textContent = '❤️';
-      heart.style.left = x + (Math.random()*40 - 20) + 'px';
-      heart.style.top = y + (Math.random()*40 - 20) + 'px';
-      heart.style.fontSize = (16 + Math.random()*16) + 'px';
-      game.appendChild(heart);
-      setTimeout(() => heart.remove(), 1000);
-    }
-  }
-
-  balls.forEach(ballObj => {
-    setInterval(() => moveBall(ballObj.el), 1500);
-
-    ballObj.el.addEventListener('click', (e) => {
-      message.textContent = ballObj.text;
-      const rect = ballObj.el.getBoundingClientRect();
-      const x = rect.left + rect.width/2 - game.getBoundingClientRect().left;
-      const y = rect.top + rect.height/2 - game.getBoundingClientRect().top;
-      createHearts(x, y, 8); // 8 hearts per tap
-    });
+// Move balls and handle clicks
+balls.forEach(ballObj => {
+  setInterval(() => moveBall(ballObj.el), 1500);
+  ballObj.el.addEventListener('click', () => {
+    message.textContent = ballObj.text;
+    const rect = ballObj.el.getBoundingClientRect();
+    const x = rect.left + rect.width/2 - game.getBoundingClientRect().left;
+    const y = rect.top + rect.height/2 - game.getBoundingClientRect().top;
+    createHearts(x, y);
   });
+});
+
+// Floating letters for "Oceane"
+const name = "Oceane";
+for(let i = 0; i < name.length; i++) {
+  const letter = document.createElement('div');
+  letter.classList.add('letter');
+  letter.textContent = name[i];
+  letter.style.left = Math.random() * 80 + "%";
+  letter.style.top = Math.random() * 90 + "%";
+  letter.style.animationDelay = (Math.random()*5) + "s";
+  letter.style.color = `rgba(255, ${100 + Math.random()*155}, ${100 + Math.random()*155}, 0.8)`;
+  game.appendChild(letter);
+}
 </script>
 </body>
 </html>
+
