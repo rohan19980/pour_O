@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pour Oceane 💖</title>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background: #fce4ec;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+  }
+  #game {
+    position: relative;
+    width: 90vw;
+    height: 90vh;
+    border: 2px solid #fff;
+    border-radius: 20px;
+    background-color: #f8bbd0;
+    overflow: hidden;
+  }
+  .ball {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    user-select: none;
+  }
+  #message {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    color: #880e4f;
+    font-weight: bold;
+    text-align: center;
+  }
+  .heart {
+    position: absolute;
+    font-size: 24px;
+    animation: floatUp 1s ease-out forwards;
+    pointer-events: none;
+  }
+  @keyframes floatUp {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-120px) scale(1.5); }
+  }
+</style>
+</head>
+<body>
+<div id="game">
+  <div id="ball1" class="ball" style="background-color:#e91e63;">💖</div>
+  <div id="ball2" class="ball" style="background-color:#9c27b0;">💜</div>
+  <div id="ball3" class="ball" style="background-color:#ffeb3b; color:#000;">💛</div>
+  <div id="ball4" class="ball" style="background-color:#4caf50;">💚</div>
+  <div id="message"></div>
+</div>
+
+<script>
+  const game = document.getElementById('game');
+  const message = document.getElementById('message');
+
+  const balls = [
+    {el: document.getElementById('ball1'), text: "Rohan t'aime ❤️"},
+    {el: document.getElementById('ball2'), text: "Rohan te manque 💌"},
+    {el: document.getElementById('ball3'), text: "Tu es trop mignonne 🥰"},
+    {el: document.getElementById('ball4'), text: "Rohan te veut 💌"}
+  ];
+
+  function moveBall(ball) {
+    const gameWidth = game.clientWidth - 80;
+    const gameHeight = game.clientHeight - 80;
+    const x = Math.random() * gameWidth;
+    const y = Math.random() * gameHeight;
+    ball.style.left = x + 'px';
+    ball.style.top = y + 'px';
+  }
+
+  function createHearts(x, y, count = 5) {
+    for (let i = 0; i < count; i++) {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.textContent = '❤️';
+      heart.style.left = x + (Math.random()*40 - 20) + 'px';
+      heart.style.top = y + (Math.random()*40 - 20) + 'px';
+      heart.style.fontSize = (16 + Math.random()*16) + 'px';
+      game.appendChild(heart);
+      setTimeout(() => heart.remove(), 1000);
+    }
+  }
+
+  balls.forEach(ballObj => {
+    setInterval(() => moveBall(ballObj.el), 1500);
+
+    ballObj.el.addEventListener('click', (e) => {
+      message.textContent = ballObj.text;
+      const rect = ballObj.el.getBoundingClientRect();
+      const x = rect.left + rect.width/2 - game.getBoundingClientRect().left;
+      const y = rect.top + rect.height/2 - game.getBoundingClientRect().top;
+      createHearts(x, y, 8); // 8 hearts per tap
+    });
+  });
+</script>
+</body>
+</html>
